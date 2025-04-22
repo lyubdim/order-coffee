@@ -1,4 +1,23 @@
 let counter = 1;
+const coffeeLabels = {
+    espresso:  'Эспрессо',
+    capuccino: 'Капучино',
+    cacao:     'Какао',
+};
+
+const milkLabels = {
+    usual:    'обычное',
+    'no-fat': 'обезжиренное',
+    soy:      'соевое',
+    coconut:  'кокосовое',
+};
+
+const extrasLabels = {
+    'whipped cream': 'взбитыe сливки',
+    marshmallow:     'зефирки',
+    chocolate:       'шоколад',
+    cinnamon:        'корица',
+};
 
 function addDeleteButton(fieldSet) {
     const btn = document.createElement('button');
@@ -15,6 +34,18 @@ function addDeleteButton(fieldSet) {
     });
 
     fieldSet.appendChild(btn);
+}
+
+function getBeverageData(fieldset) {
+    const coffee = fieldset.querySelector('select').value;
+
+    const milk = fieldset.querySelector('input[name="milk"]:checked').value;
+
+    const extras = Array
+        .from(fieldset.querySelectorAll('input[name="options"]:checked'))
+        .map(input => extrasLabels[input.value]);
+
+    return [coffeeLabels[coffee], milkLabels[milk], extras.toString()];
 }
 
 
@@ -36,9 +67,31 @@ addButton.addEventListener("click",  e => {
 const submitBtn = document.querySelector('.submit-button');
 const orderModal = document.getElementById('orderModal');
 const closeOrderBtn = document.getElementById('closeOrderModal');
+const p = document.getElementById("counter")
+const thead = document.querySelector('#table tbody');
+const lastDigit = [2, 3, 4]
 
 submitBtn.addEventListener('click', e => {
     e.preventDefault();
+    const all = document.querySelectorAll('.beverage');
+    let end = 'напитков'
+    if (lastDigit.includes(counter % 10) && (Math.trunc(counter / 10) !== 1)) {
+        end = 'напитка'
+    } else if (counter % 10 === 1 && (Math.trunc(counter / 10) !== 1)) {
+        end = 'напиток'
+    }
+    p.textContent = `Вы заказали ${all.length} ${end}`
+    thead.replaceChildren()
+    all.forEach(e => {
+        const tr = document.createElement('tr');
+        const info = getBeverageData(e);
+        for (let j = 0; j < 3; j++) {
+            const th = document.createElement('td');
+            th.textContent = info[j];
+            tr.appendChild(th);
+        }
+        thead.appendChild(tr);
+    })
     orderModal.classList.add('active');
 });
 
