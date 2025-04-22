@@ -36,19 +36,37 @@ function addDeleteButton(fieldSet) {
     fieldSet.appendChild(btn);
 }
 
+function getBeverageData(fieldset) {
+    // 1) кофе
+    const coffee = fieldset.querySelector('select').value;
+
+    // 2) молоко (radio)
+    const milk = fieldset.querySelector('input[name="milk"]:checked').value;
+
+    // 3) все допы (checkboxes)
+    const extras = Array
+        .from(fieldset.querySelectorAll('input[name="options"]:checked'))
+        .map(input => extrasLabels[input.value]);
+
+    return [coffeeLabels[coffee], milkLabels[milk], extras.toString()];
+}
+
 
 
 const addButton = document.getElementsByClassName("add-button")[0];
 const fieldSet = document.getElementsByClassName("beverage")[0];
+const cleanFieldSet = fieldSet.cloneNode(true);
 addDeleteButton(fieldSet);
+createWrapper(fieldSet);
 const form = document.querySelector("form");
 addButton.addEventListener("click",  e => {
     counter++;
-    const newFieldSet =  fieldSet.cloneNode(true);
+    const newFieldSet =  cleanFieldSet.cloneNode(true);
     newFieldSet.children[0].textContent = `Напиток №${counter}`;
     const all = document.querySelectorAll('.beverage');
     const referenceNode = form.children[all.length];
     addDeleteButton(newFieldSet);
+    createWrapper(newFieldSet);
     form.insertBefore(newFieldSet, referenceNode);
 });
 
@@ -93,7 +111,7 @@ orderModal.addEventListener('click', e => {
     }
 });
 
-document.querySelectorAll('fieldset.beverage').forEach(fieldset => {
+function createWrapper(fieldSet) {
     const wrapper = document.createElement('div');
     wrapper.className = 'field';
 
@@ -112,7 +130,7 @@ document.querySelectorAll('fieldset.beverage').forEach(fieldset => {
     output.style.marginTop = '8px';
     wrapper.appendChild(output);
 
-    fieldset.appendChild(wrapper);
+    fieldSet.appendChild(wrapper);
 
     textarea.addEventListener('input', () => {
         let text = textarea.value;
@@ -122,7 +140,7 @@ document.querySelectorAll('fieldset.beverage').forEach(fieldset => {
         );
         output.innerHTML = text;
     });
-});
+}
 
 
 
