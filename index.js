@@ -1,22 +1,22 @@
 let counter = 1;
 const coffeeLabels = {
-    espresso:  'Эспрессо',
+    espresso: 'Эспрессо',
     capuccino: 'Капучино',
-    cacao:     'Какао',
+    cacao: 'Какао',
 };
 
 const milkLabels = {
-    usual:    'обычное',
+    usual: 'обычное',
     'no-fat': 'обезжиренное',
-    soy:      'соевое',
-    coconut:  'кокосовое',
+    soy: 'соевое',
+    coconut: 'кокосовое',
 };
 
 const extrasLabels = {
     'whipped cream': 'взбитыe сливки',
-    marshmallow:     'зефирки',
-    chocolate:       'шоколад',
-    cinnamon:        'корица',
+    marshmallow: 'зефирки',
+    chocolate: 'шоколад',
+    cinnamon: 'корица',
 };
 
 function addDeleteButton(fieldSet) {
@@ -37,13 +37,11 @@ function addDeleteButton(fieldSet) {
 }
 
 function getBeverageData(fieldset) {
-    // 1) кофе
+    const number = "milk" + fieldset.children[0].textContent.slice(-1);
     const coffee = fieldset.querySelector('select').value;
+    console.log(number)
+    const milk = fieldset.querySelector(`input[name=${number}]:checked`).value;
 
-    // 2) молоко (radio)
-    const milk = fieldset.querySelector('input[name="milk"]:checked').value;
-
-    // 3) все допы (checkboxes)
     const extras = Array
         .from(fieldset.querySelectorAll('input[name="options"]:checked'))
         .map(input => extrasLabels[input.value]);
@@ -52,17 +50,27 @@ function getBeverageData(fieldset) {
 }
 
 
-
 const addButton = document.getElementsByClassName("add-button")[0];
 const fieldSet = document.getElementsByClassName("beverage")[0];
 const cleanFieldSet = fieldSet.cloneNode(true);
 addDeleteButton(fieldSet);
 createWrapper(fieldSet);
+fieldSet
+    .querySelectorAll('input[type="radio"][name="milk"]')
+    .forEach(input => {
+        input.name = `milk1`;
+    });
+
 const form = document.querySelector("form");
-addButton.addEventListener("click",  e => {
+addButton.addEventListener("click", e => {
     counter++;
-    const newFieldSet =  cleanFieldSet.cloneNode(true);
+    const newFieldSet = cleanFieldSet.cloneNode(true);
     newFieldSet.children[0].textContent = `Напиток №${counter}`;
+    newFieldSet
+        .querySelectorAll('input[type="radio"][name="milk"]')
+        .forEach(input => {
+            input.name = `milk${counter}`;
+        });
     const all = document.querySelectorAll('.beverage');
     const referenceNode = form.children[all.length];
     addDeleteButton(newFieldSet);
@@ -96,6 +104,10 @@ submitBtn.addEventListener('click', e => {
             th.textContent = info[j];
             tr.appendChild(th);
         }
+        const th = document.createElement('td');
+        const textarea = e.querySelector('.field textarea');
+        th.textContent = textarea.value;
+        tr.appendChild(th);
         thead.appendChild(tr);
     })
     orderModal.classList.add('active');
