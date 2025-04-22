@@ -107,3 +107,7 @@
     color: #000;
 }
 
+.beverage .field:last-child .label-text {
+    width: auto;
+    white-space: nowrap;
+}

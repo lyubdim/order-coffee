@@ -36,18 +36,6 @@ function addDeleteButton(fieldSet) {
     fieldSet.appendChild(btn);
 }
 
-function getBeverageData(fieldset) {
-    const coffee = fieldset.querySelector('select').value;
-
-    const milk = fieldset.querySelector('input[name="milk"]:checked').value;
-
-    const extras = Array
-        .from(fieldset.querySelectorAll('input[name="options"]:checked'))
-        .map(input => extrasLabels[input.value]);
-
-    return [coffeeLabels[coffee], milkLabels[milk], extras.toString()];
-}
-
 
 
 const addButton = document.getElementsByClassName("add-button")[0];
@@ -104,3 +92,37 @@ orderModal.addEventListener('click', e => {
         orderModal.classList.remove('active');
     }
 });
+
+document.querySelectorAll('fieldset.beverage').forEach(fieldset => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'field';
+
+    const label = document.createElement('span');
+    label.className = 'label-text';
+    label.textContent = 'И еще вот что';
+    wrapper.appendChild(label);
+
+    const textarea = document.createElement('textarea');
+    textarea.rows = 3;
+    textarea.style.display = 'block';
+    textarea.style.marginTop = '5px';
+    wrapper.appendChild(textarea);
+
+    const output = document.createElement('div');
+    output.style.marginTop = '8px';
+    wrapper.appendChild(output);
+
+    fieldset.appendChild(wrapper);
+
+    textarea.addEventListener('input', () => {
+        let text = textarea.value;
+        text = text.replace(
+            /(срочно|быстрее|побыстрее|скорее|поскорее|очень нужно)/gi,
+            '<b>$1</b>'
+        );
+        output.innerHTML = text;
+    });
+});
+
+
+
